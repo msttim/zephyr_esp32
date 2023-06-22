@@ -238,11 +238,11 @@ Logging in a module instance
 In case of modules which are multi-instance and instances are widely used
 across the system enabling logs will lead to flooding. Logger provide the tools
 which can be used to provide filtering on instance level rather than module
-level. In that case logging can be enabled for particular instance.
+level. In that case logging can be enabled for a particular instance.
 
-In order to use instance level filtering following steps must be performed:
+In order to use instance level filtering the following steps must be performed:
 
-- a pointer to specific logging structure is declared in instance structure.
+- a pointer to specific logging structure is declared in the instance structure.
   :c:macro:`LOG_INSTANCE_PTR_DECLARE` is used for that.
 
 .. code-block:: c
@@ -265,7 +265,7 @@ In order to use instance level filtering following steps must be performed:
    		LOG_INSTANCE_PTR_INIT(log, foo, _name)          \
    	}
 
-Note that when logging is disabled logging instance and pointer to that instance
+Note that when logging is disabled, the logging instance and pointer to that instance
 are not created.
 
 In order to use the instance logging API in a source file, a compile-time log
@@ -299,14 +299,14 @@ By default, logging processing in deferred mode is handled internally by the
 dedicated task which starts automatically. However, it might not be available
 if multithreading is disabled. It can also be disabled by unsetting
 :kconfig:option:`CONFIG_LOG_PROCESS_TRIGGER_THRESHOLD`. In that case, logging can
-be controlled using API defined in :zephyr_file:`include/zephyr/logging/log_ctrl.h`.
+be controlled using the API defined in :zephyr_file:`include/zephyr/logging/log_ctrl.h`.
 Logging must be initialized before it can be used. Optionally, user can provide
 function which returns timestamp value. If not provided, :c:macro:`k_cycle_get`
 or :c:macro:`k_cycle_get_32` is used for timestamping.
 :c:func:`log_process` function is used to trigger processing of one log
-message (if pending). Function returns true if there is more messages pending.
+message (if pending). Function returns true if more messages are pending.
 However, it is recommended to use macro wrappers (:c:macro:`LOG_INIT` and
-:c:macro:`LOG_PROCESS`) which handles case when logging is disabled.
+:c:macro:`LOG_PROCESS`) which handle the case when logging is disabled.
 
 Following snippet shows how logging can be processed in simple forever loop.
 
@@ -456,13 +456,13 @@ Run-time filtering
 ------------------
 
 If run-time filtering is enabled, then for each source of logging a filter
-structure in RAM is declared. Such filter is using 32 bits divided into ten 3
+structure in RAM is declared. Such a filter uses 32 bits divided into ten 3
 bit slots. Except *slot 0*, each slot stores current filter for one backend in
 the system. *Slot 0* (bits 0-2) is used to aggregate maximal filter setting for
 given source of logging. Aggregate slot determines if log message is created
 for given entry since it indicates if there is at least one backend expecting
-that log entry. Backend slots are examined when message is processed by the core
-to determine if message is accepted by the given backend. Contrary to compile
+that log entry. Backend slots are examined when a message is processed by the core
+to determine if the message is accepted by the given backend. Contrary to compile
 time filtering, binary footprint is increased because logs are compiled in.
 
 In the example below backend 1 is set to receive errors (*slot 1*) and backend
@@ -740,17 +740,17 @@ Please refer to :ref:`logging_dictionary_sample` on how to use the log parser.
 Recommendations
 ***************
 
-The are following recommendations:
+The following are recommended:
 
 * Enable :kconfig:option:`CONFIG_LOG_SPEED` to slightly speed up deferred logging at the
   cost of slight increase in memory footprint.
-* Compiler with C11 ``_Generic`` keyword support is recommended. Logging
+* Compilation with C11 ``_Generic`` keyword support is recommended. Logging
   performance is significantly degraded without it. See :ref:`cbprintf_packaging`.
-* It is recommended to cast pointer to ``const char *`` when it is used with ``%s``
+* Cast a pointer to ``const char *`` when it is used with ``%s``
   format specifier and it points to a constant string.
-* It is recommended to cast pointer to ``char *`` when it is used with ``%s``
+* Cast a pointer to ``char *`` when it is used with ``%s``
   format specifier and it points to a transient string.
-* It is recommended to cast character pointer to non character pointer
+* Cast a character pointer to a non character pointer
   (e.g., ``void *``) when it is used with ``%p`` format specifier.
 
 .. code-block:: c
@@ -807,18 +807,18 @@ on ``qemu_x86``. It is a rough comparison to give a general overview.
 Stack usage
 ***********
 
-When logging is enabled it impacts stack usage of the context that uses logging API. If stack
+When logging is enabled it impacts stack usage of the context that uses the logging API. If stack
 is optimized it may lead to stack overflow. Stack usage depends on mode and optimization. It
 also significantly varies between platforms. In general, when :kconfig:option:`CONFIG_LOG_MODE_DEFERRED`
-is used stack usage is smaller since logging is limited to creating and storing log message.
-When :kconfig:option:`CONFIG_LOG_MODE_IMMEDIATE` is used then log message is processed by the backend
+is used, stack usage is smaller since logging is limited to creating and storing log message.
+When :kconfig:option:`CONFIG_LOG_MODE_IMMEDIATE` is used, then log message is processed by the backend
 which includes string formatting. In case of that mode, stack usage will depend on which backends
 are used.
 
 :zephyr_file:`tests/subsys/logging/log_stack` test is used to characterize stack usage depending
 on mode, optimization and platform used. Test is using only the default backend.
 
-Some of the platforms characterization for log message with two ``integer`` arguments listed below:
+Some of the platforms characteristics for logging a message with two ``integer`` arguments are listed below:
 
 +---------------+----------+----------------------------+-----------+-----------------------------+
 | Platform      | Deferred | Deferred (no optimization) | Immediate | Immediate (no optimization) |
